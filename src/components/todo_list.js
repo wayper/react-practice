@@ -2,14 +2,16 @@ import React from 'react';
 
 import TodoListItem from './todo_list_item';
 
-const Todolist = ({ todoData }) => {
+const Todolist = ({ todoData, onDelete, onCompleted, onImportant }) => {
 
     const elements = todoData.map(({ id, ...otherProps }) => {
         return (
             <li key={id}  className="list-group-item list-group-item-action py-1 px-1 shadow-sm mb-1 rounded">
                 <TodoListItem 
                     {...otherProps}
-                    onDelete={() => console.log(`Delete: ${id}`)} />
+                    onDelete={ () => onDelete(id) }
+                    onCompleted={ () => onCompleted(id) }
+                    onImportant={ () => onImportant(id) } />
             </li>);
     });
 
