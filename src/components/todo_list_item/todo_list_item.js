@@ -6,6 +6,7 @@ const TodoListItem = ({ textTask, onDelete, onCompleted, onImportant, done, impo
         <span className="d-flex justify-content-between">
             <button onClick={onCompleted} type="button" className="btn btn-outline-secondary align-self-center p-1"><i className="fa fa-check" aria-hidden="true"></i></button>
             <span
+                contentEditable="true"
                 className={`align-self-center flex-grow-1 text-left mx-2
                                 ${important ? 'font-weight-bold' : ''}
                                 ${done ? 'text-muted' : ''}`
