@@ -46,6 +46,7 @@ class App extends Component {
             active: false,
             done: false,
         },
+        filterSearch: '',
     };
 
     onBtnDeleteTask = (id) => {
@@ -79,10 +80,7 @@ class App extends Component {
         console.log('Add task!', text);
     };
 
-
-
     // Change the status of tasks (important / regular, completed / unfulfilled)
-
     changeStatusTasks = (arr, id, propName) => {
         const index = arr.findIndex((el) => el.id === id);
         const newArr = [...arr];
@@ -107,8 +105,7 @@ class App extends Component {
         })
     }
 
-    // Filters
-
+    // Filters (all, active, done)
     changeStatusFilter = ( obj, propName ) => {
         const newObj = {...obj};
         for (let key in newObj) {
@@ -145,9 +142,26 @@ class App extends Component {
         })
     }
 
+    // Filter SEARCH PANEL
+    onSearchChange = ( textSearch ) => {
+        this.setState({
+            filterSearch: textSearch
+        });
+    }
+
+    filterSearchDo( arrTasks, searhText ) {
+        if (searhText === 0) {
+            return arrTasks;
+        }
+        return arrTasks.filter((item) => {
+            return item.textTask.toLowerCase().indexOf(searhText.toLowerCase()) > -1;
+        });
+    }
+
     render() {
 
-        const { todoData, filters } = this.state;
+        const { todoData, filters, filterSearch } = this.state;
+        const visibleItems = this.filterSearchDo( todoData, filterSearch );
         const allTasks = todoData.length;
         const activeTasks = todoData.filter((el) => !el.done).length;
 
@@ -159,7 +173,8 @@ class App extends Component {
                     <div className="container">
                         <div className="d-inline-flex flex-column flex-md-row flex-sm-column justify-content-between flex-row">
                             <div className="flex-grow-1 mb-2">
-                                <SearchPanel />
+                                <SearchPanel
+                                    onSearchChange={ this.onSearchChange } />
                             </div>
                             <div className="">
                                 <ItemStatusFilter
@@ -173,7 +188,7 @@ class App extends Component {
                         </div>
                     </div>
                     <Todolist
-                        todoData={todoData}
+                        todoData={ visibleItems }
                         onDelete={this.onBtnDeleteTask}
                         onCompleted={this.onBtnCompletedTask}
                         onImportant={this.onBtnImportantTask}

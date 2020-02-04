@@ -20,8 +20,6 @@ const Todolist = ({ todoData, onDelete, onCompleted, onImportant, filters }) => 
             </li>);
     });
 
-    console.log(elements);
-
     return (
         <div className="d-flex justify-content-center my-3">
             <ul className="col-12 col-sm-9 col-md-7 col-lg-6 col-xl-5 list-group">
