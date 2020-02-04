@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import ReactDOM from 'react-dom';
 
 import * as serviceWorker from './serviceWorker';
 
 import AppHeader from './components/app_header';
 import SearchPanel from './components/search_panel';
-import Todolist from './components/todo_list';
-import ItemStatusFilter from './components/item-status-filter';
+import Todolist from './components/todo_list/todo_list';
 import AddTasksPanel from './components/add_tasks_panel';
+import ItemStatusFilter from './components/item-status-filter';
+import ThemeChangePanel from './components/theme_change/tneme_change';
 
 import './index.css';
 
@@ -35,6 +36,16 @@ class App extends Component {
                 done: true,
             },
         ],
+        theme: {
+            light: true,
+            dark: false,
+            color: false,
+        },
+        filters: {
+            all: true,
+            active: false,
+            done: false,
+        },
     };
 
     onBtnDeleteTask = (id) => {
@@ -66,61 +77,111 @@ class App extends Component {
 
 
         console.log('Add task!', text);
-    }
+    };
+
+
+
+    // Change the status of tasks (important / regular, completed / unfulfilled)
+
+    changeStatusTasks = (arr, id, propName) => {
+        const index = arr.findIndex((el) => el.id === id);
+        const newArr = [...arr];
+        newArr[index][propName] = !newArr[index][propName];
+
+        return newArr
+    };
 
     onBtnCompletedTask = (id) => {
         this.setState(({ todoData }) => {
-            const index = todoData.findIndex((el) => el.id === id);
-            const newTodoData = [...todoData];
-            newTodoData[index].done = !newTodoData[index].done;
             return {
-                todoData: newTodoData
+                todoData: this.changeStatusTasks( todoData, id, 'done' )
             };
-        }
-        )
-    }
+        })
+    };
 
     onBtnImportantTask = (id) => {
         this.setState(({ todoData }) => {
-            const index = todoData.findIndex((el) => el.id === id);
-            const newTodoData = [...todoData];
-            newTodoData[index].important = !newTodoData[index].important;
             return {
-                todoData: newTodoData
+                todoData: this.changeStatusTasks( todoData, id, 'important' )
             };
-        }
-        )
+        })
     }
 
+    // Filters
+
+    changeStatusFilter = ( obj, propName ) => {
+        const newObj = {...obj};
+        for (let key in newObj) {
+            if (key === propName) {
+                newObj[key] = true;
+             } else {
+                 newObj[key] = false;
+             }
+          }
+        return newObj
+    };
+
+    onBtnAll = () => {
+        this.setState(({ filters }) => {
+            return {
+                filters: this.changeStatusFilter( filters, 'all' )
+            };
+        })
+    }
+
+    onBtnActive = () => {
+        this.setState(({ filters }) => {
+            return {
+                filters: this.changeStatusFilter( filters, 'active' )
+            };
+        })
+    }
+
+    onBtnDone = () => {
+        this.setState(({ filters }) => {
+            return {
+                filters: this.changeStatusFilter( filters, 'done' )
+            };
+        })
+    }
 
     render() {
 
-        const allTasks = this.state.todoData.length;
-        const activeTasks = this.state.todoData.filter((el) => !el.done).length;
+        const { todoData, filters } = this.state;
+        const allTasks = todoData.length;
+        const activeTasks = todoData.filter((el) => !el.done).length;
 
         return (
-            <div className="container-fluid mx-auto text-center py-2">
-                <AppHeader />
-                <div className="container">
-                    <div className="d-inline-flex flex-column flex-md-row flex-sm-column justify-content-between flex-row">
-                        <div className="flex-grow-1 mb-2">
-                            <SearchPanel />
-                        </div>
-                        <div className="">
-                            <ItemStatusFilter
-                                allTasks={allTasks} 
-                                activeTasks={activeTasks} />
+            <Fragment>
+                <ThemeChangePanel />
+                <div className="container-fluid mx-auto text-center py-2">
+                    <AppHeader />
+                    <div className="container">
+                        <div className="d-inline-flex flex-column flex-md-row flex-sm-column justify-content-between flex-row">
+                            <div className="flex-grow-1 mb-2">
+                                <SearchPanel />
+                            </div>
+                            <div className="">
+                                <ItemStatusFilter
+                                    onBtnAll={ this.onBtnAll }
+                                    onBtnActive={ this.onBtnActive }
+                                    onBtnDone={ this.onBtnDone }
+                                    filters={ filters }
+                                    allTasks={ allTasks }
+                                    activeTasks={ activeTasks } />
+                            </div>
                         </div>
                     </div>
+                    <Todolist
+                        todoData={todoData}
+                        onDelete={this.onBtnDeleteTask}
+                        onCompleted={this.onBtnCompletedTask}
+                        onImportant={this.onBtnImportantTask}
+                        filters={ filters } />
+                    <AddTasksPanel
+                        addHandleTask={this.addHandleTask} />
                 </div>
-                <Todolist
-                    todoData={this.state.todoData}
-                    onDelete={this.onBtnDeleteTask}
-                    onCompleted={this.onBtnCompletedTask}
-                    onImportant={this.onBtnImportantTask} />
-                <AddTasksPanel
-                    addHandleTask={this.addHandleTask} />
-            </div>
+            </Fragment>
         );
     }
 };

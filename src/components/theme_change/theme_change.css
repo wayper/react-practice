@@ -1,0 +1,13 @@
+.theme-change-panel {
+    top:-7.5em; right:5em; /* Положение */
+    padding: .5em; /* Поля */
+    margin: 0; /* Отступы */
+    position: absolute; /* Абсолютное позиционирование */
+    color: #fff; /* Цвет текста */
+    /* Переход */
+    transition: top 0.5s ease-out 0.5s;
+}
+
+.theme-change-panel:hover { 
+    top: 0;
+}

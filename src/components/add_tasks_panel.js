@@ -3,30 +3,49 @@ import React, { Component } from 'react';
 export default class AddTasksPanel extends Component {
 
     state = {
-        inputValue: 'tra-ta-ta',
-    }
+        inputValue: '',
+        inputValid: true,
+    };
+
+    onLabelChange = (e) => {
+        this.setState({
+            inputValue: e.target.value
+        });
+    };
+
+    onSubmitForm = (e) => {
+        e.preventDefault();
+        if (this.state.inputValue.length > 3) {
+            this.props.addHandleTask(this.state.inputValue);
+            this.setState({
+                inputValue: '',
+                inputValid: true, 
+            });
+        } else {
+            this.setState({
+                inputValid: false, 
+            });
+        }
+    };
 
     render() {
-        const { addHandleTask } = this.props;
-        const { inputValue } = this.state;
-        console.log(inputValue);
+        const { inputValue, inputValid } = this.state;
 
         return (
-            <div className="input-group mb-3">
-                <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Recipient's username" 
-                    aria-label="Recipient's username" 
-                    aria-describedby="button-addon2" />
-                <div className="input-group-append">
-                    <button 
-                        className="btn btn-outline-secondary" 
-                        type="button"
-                        onClick={() => addHandleTask(inputValue)}
-                        >Add task</button>
-                </div>
-            </div>
+            <form onSubmit={ this.onSubmitForm }>
+                    <input
+                        type="text"
+                        className={ `form-control ${ inputValid ? '' : 'is-invalid' }` }
+                        onChange={ this.onLabelChange }
+                        placeholder="+ new task"
+                        value={ inputValue }
+                        maxLength={50}
+                    />
+                    <button
+                        className="btn btn-outline-secondary"
+                        type="submit"
+                    >Add</button>
+            </form>
         );
     }
 };
