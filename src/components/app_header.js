@@ -1,10 +1,7 @@
 import React from 'react';
 
 const AppHeader = () => {
-    return (
-        <div> Theme: light/dark
-            <h1 className="">My tasks</h1>
-        </div>);
+    return <h1>My tasks</h1>
 };
 
 export default AppHeader;

@@ -7,17 +7,17 @@ export default class ItemStatusFilter extends Component {
         return (
             <div className="btn-group ml-2" role="group" aria-label="Basic example">
                 <button type="button" 
-                    className={`btn btn-outline-dark px-1 ${all ? 'font-weight-bold' : ''}`}
+                    className={`btn btn-outline-secondary px-1 ${all ? 'font-weight-bold' : ''}`}
                     onClick={ onBtnAll }
                     >All <span className="badge badge-secondary">{allTasks}</span>
                 </button>
                 <button type="button" 
-                    className={`btn btn-outline-dark px-1 ${active ? 'font-weight-bold' : ''}`}
+                    className={`btn btn-outline-secondary px-1 ${active ? 'font-weight-bold' : ''}`}
                     onClick={ onBtnActive }
                     >Active <span className="badge badge-secondary">{activeTasks}</span>
                 </button>
                 <button type="button" 
-                    className={`btn btn-outline-dark px-1 ${done ? 'font-weight-bold' : ''}`}
+                    className={`btn btn-outline-secondary px-1 ${done ? 'font-weight-bold' : ''}`}
                     onClick={ onBtnDone }
                     >Done <span className="badge badge-secondary">{allTasks - activeTasks}</span>
                 </button>

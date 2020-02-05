@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
 import AppHeader from './components/app_header';
 import SearchPanel from './components/search_panel';
 import Todolist from './components/todo_list/todo_list';
-import AddTasksPanel from './components/add_tasks_panel';
+import AddTasksPanel from './components/add_tasks_panel/add_tasks_panel';
 import ItemStatusFilter from './components/item-status-filter';
 import ThemeChangePanel from './components/theme_change/tneme_change';
 
@@ -92,7 +92,7 @@ class App extends Component {
     onBtnCompletedTask = (id) => {
         this.setState(({ todoData }) => {
             return {
-                todoData: this.changeStatusTasks( todoData, id, 'done' )
+                todoData: this.changeStatusTasks(todoData, id, 'done')
             };
         })
     };
@@ -100,28 +100,28 @@ class App extends Component {
     onBtnImportantTask = (id) => {
         this.setState(({ todoData }) => {
             return {
-                todoData: this.changeStatusTasks( todoData, id, 'important' )
+                todoData: this.changeStatusTasks(todoData, id, 'important')
             };
         })
     }
 
     // Filters (all, active, done)
-    changeStatusFilter = ( obj, propName ) => {
-        const newObj = {...obj};
+    changeStatusFilter = (obj, propName) => {
+        const newObj = { ...obj };
         for (let key in newObj) {
             if (key === propName) {
                 newObj[key] = true;
-             } else {
-                 newObj[key] = false;
-             }
-          }
+            } else {
+                newObj[key] = false;
+            }
+        }
         return newObj
     };
 
     onBtnAll = () => {
         this.setState(({ filters }) => {
             return {
-                filters: this.changeStatusFilter( filters, 'all' )
+                filters: this.changeStatusFilter(filters, 'all')
             };
         })
     }
@@ -129,7 +129,7 @@ class App extends Component {
     onBtnActive = () => {
         this.setState(({ filters }) => {
             return {
-                filters: this.changeStatusFilter( filters, 'active' )
+                filters: this.changeStatusFilter(filters, 'active')
             };
         })
     }
@@ -137,19 +137,19 @@ class App extends Component {
     onBtnDone = () => {
         this.setState(({ filters }) => {
             return {
-                filters: this.changeStatusFilter( filters, 'done' )
+                filters: this.changeStatusFilter(filters, 'done')
             };
         })
     }
 
     // Filter SEARCH PANEL
-    onSearchChange = ( textSearch ) => {
+    onSearchChange = (textSearch) => {
         this.setState({
             filterSearch: textSearch
         });
     }
 
-    filterSearchDo( arrTasks, searhText ) {
+    filterSearchDo(arrTasks, searhText) {
         if (searhText === 0) {
             return arrTasks;
         }
@@ -158,43 +158,90 @@ class App extends Component {
         });
     }
 
+    // Change Theme
+
+    changeTheme = (obj, propName) => {
+        const newObj = { ...obj };
+        for (let key in newObj) {
+            if (key === propName) {
+                newObj[key] = true;
+            } else {
+                newObj[key] = false;
+            }
+        }
+        return newObj
+    };
+
+    onBtnLight = () => {
+        this.setState(({ theme }) => {
+            return {
+                theme: this.changeTheme(theme, 'light')
+            };
+        })
+    }
+
+    onBtnDark = () => {
+        this.setState(({ theme }) => {
+            return {
+                theme: this.changeTheme(theme, 'dark')
+            };
+        })
+    }
+
+    onBtnColor = () => {
+        this.setState(({ theme }) => {
+            return {
+                theme: this.changeTheme(theme, 'color')
+            };
+        })
+    }
+
     render() {
 
         const { todoData, filters, filterSearch } = this.state;
-        const visibleItems = this.filterSearchDo( todoData, filterSearch );
+        const visibleItems = this.filterSearchDo(todoData, filterSearch);
         const allTasks = todoData.length;
         const activeTasks = todoData.filter((el) => !el.done).length;
+        const { light, dark } = this.state.theme;
 
         return (
             <Fragment>
-                <ThemeChangePanel />
-                <div className="container-fluid mx-auto text-center py-2">
-                    <AppHeader />
-                    <div className="container">
+                <div className={`d-flex justify-content-center ${light ? 'bg-light' : dark ? 'bg-dark' : 'bg-warning'}`}>
+                    <ThemeChangePanel
+                        onBtnLight={this.onBtnLight}
+                        onBtnDark={this.onBtnDark}
+                        onBtnColor={this.onBtnColor} />
+                    <div className="d-flex flex-column align-items-stretch col-12 col-sm-9 col-md-7 col-lg-6 col-xl-5">
+                        <div className={`text-center ${light ? 'text-dark' : dark ? 'text-light' : 'text-success'}`} >
+                            <AppHeader />
+                        </div>
                         <div className="d-inline-flex flex-column flex-md-row flex-sm-column justify-content-between flex-row">
                             <div className="flex-grow-1 mb-2">
                                 <SearchPanel
-                                    onSearchChange={ this.onSearchChange } />
+                                    onSearchChange={this.onSearchChange} />
                             </div>
                             <div className="">
                                 <ItemStatusFilter
-                                    onBtnAll={ this.onBtnAll }
-                                    onBtnActive={ this.onBtnActive }
-                                    onBtnDone={ this.onBtnDone }
-                                    filters={ filters }
-                                    allTasks={ allTasks }
-                                    activeTasks={ activeTasks } />
+                                    onBtnAll={this.onBtnAll}
+                                    onBtnActive={this.onBtnActive}
+                                    onBtnDone={this.onBtnDone}
+                                    filters={filters}
+                                    allTasks={allTasks}
+                                    activeTasks={activeTasks} />
                             </div>
                         </div>
+                        <div> {/*className="d-flex flex-column flex-md-row flex-sm-column justify-content-between flex-row"*/}
+                            <AddTasksPanel
+                                addHandleTask={this.addHandleTask} />
+                            <Todolist
+                                todoData={visibleItems}
+                                onDelete={this.onBtnDeleteTask}
+                                onCompleted={this.onBtnCompletedTask}
+                                onImportant={this.onBtnImportantTask}
+                                filters={filters} />
+
+                        </div>
                     </div>
-                    <Todolist
-                        todoData={ visibleItems }
-                        onDelete={this.onBtnDeleteTask}
-                        onCompleted={this.onBtnCompletedTask}
-                        onImportant={this.onBtnImportantTask}
-                        filters={ filters } />
-                    <AddTasksPanel
-                        addHandleTask={this.addHandleTask} />
                 </div>
             </Fragment>
         );

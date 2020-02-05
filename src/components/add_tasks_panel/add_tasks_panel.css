@@ -1,0 +1,16 @@
+.add-tasks-panel {
+    display: block;
+    position: relative;
+}
+
+.add-tasks-panel .valid-feedback {
+    display: none;
+    position: absolute;
+    top: 36px;
+    left: 30px;
+    color: red;
+}
+
+.add-tasks-panel .valid {
+    display: block;
+}

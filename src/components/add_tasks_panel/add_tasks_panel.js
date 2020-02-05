@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import './add_tasks_panel.css';
+
 export default class AddTasksPanel extends Component {
 
     state = {
@@ -32,15 +34,16 @@ export default class AddTasksPanel extends Component {
         const { inputValue, inputValid } = this.state;
 
         return (
-            <form onSubmit={ this.onSubmitForm }>
+            <form className="d-flex add-tasks-panel mt-2 mb-4" onSubmit={ this.onSubmitForm }>
                     <input
                         type="text"
-                        className={ `form-control ${ inputValid ? '' : 'is-invalid' }` }
+                        className={ `form-control mr-2 ${ inputValid ? '' : 'is-invalid' }` }
                         onChange={ this.onLabelChange }
                         placeholder="+ new task"
                         value={ inputValue }
                         maxLength={50}
                     />
+                    <div className={ `valid-feedback ${ inputValid ? '' : 'valid' }` }>Must be more than 3 characters!у</div>
                     <button
                         className="btn btn-outline-secondary"
                         type="submit"
